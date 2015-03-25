@@ -1,8 +1,8 @@
 import java.math.BigDecimal;
-import java.util.List;
 
-import org.ojalgo.finance.portfolio.MarkowitzModel;
 import org.ojalgo.matrix.BigMatrix;
+
+import controller.Solver;
 
 public class Starter {
 	public static void main(String[] args) throws Exception {
@@ -17,8 +17,7 @@ public class Starter {
 		BigMatrix expectedExcessReturns = MatrixHelper
 				.getExcessReturns(returnsMx);
 
-		final MarkowitzModel markowitzModel = new MarkowitzModel(cov,
-				expectedExcessReturns);
+		Solver markowitzModel = new Solver(cov, expectedExcessReturns);
 
 		// setup
 		markowitzModel.setShortingAllowed(false);
@@ -29,17 +28,9 @@ public class Starter {
 			markowitzModel.setUpperLimit(i, new BigDecimal(1.0));
 		}
 
-		double nRisk = 100; //0 - 2000
+		double nRisk = 100; // 0 - 2000
 		markowitzModel.setRiskAversion(nRisk);
 
-		final List<BigDecimal> re = markowitzModel.getWeights();
-		System.out.println("=======assets====================");
-		for (int i = 0; i < re.size(); i++) {
-			System.out.println(re.get(i));
-		}
-
-		System.out.println("=======result====================");
-		System.out.println("Mean return " + markowitzModel.getMeanReturn());
-		System.out.println("Return variance " + markowitzModel.getReturnVariance());
+		System.out.println(markowitzModel.solve());
 	}
 }
